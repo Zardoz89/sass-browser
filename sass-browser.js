@@ -26,32 +26,42 @@ function getAllScssSheets() {
  * Try to resolve a import and downdload the apropiated file. If the file isn't found
  * tries to use alternative namaes following this list (for @import "hello/world";) :
  *
- * (1) filename as given -> "hello/world"
- * (2) underscore + given -> "hello/_world"
- * (3) underscore + given + scss extension-> "hello/_world.scss"
- * (4) underscore + given + sass extension-> "hello/_world.sass"
- * (5) underscore + given + css extension-> "hello/_world.css"
+ * - underscore + given -> "hello/_world"
+ * - underscore + given + scss extension-> "hello/_world.scss"
+ * - underscore + given + sass extension-> "hello/_world.sass"
+ * - underscore + given + css extension-> "hello/_world.css"
+ * - given + scss extension-> "hello/_world.scss"
+ * - given + sass extension-> "hello/_world.sass"
+ * - given + css extension-> "hello/_world.css"
  */
 async function resolveAndDownloadFile (href, debugLog) {
+  var haveExtension = new RegExp(`.*\.(css|scss|sass)$`).test(href);
   let result = await getRemoteFile(href);
   if (result.error) {
+    const originalError = result.error;
     const hrefUnderscore = addUnderscore(href);
-    result = await getRemoteFile(hrefUnderscore, debugLog);
-    if (result.error) {
-      if (!hrefUnderscore.endsWith(".scss")) {
-        result = await getRemoteFile(hrefUnderscore + ".scss", debugLog);
-      }
-      if (result.error) {
-        if (!hrefUnderscore.endsWith(".sass")) {
-          result = await getRemoteFile(hrefUnderscore + ".sass", debugLog);
-        }
-        if (result.error) {
-          if (!hrefUnderscore.endsWith(".css")) {
-            result = await getRemoteFile(hrefUnderscore + ".css", debugLog);
-          }
-        }
-      }
+    let resultPromises = [
+      getRemoteFile(hrefUnderscore, debugLog)
+    ];
+    if (!haveExtension) {
+      resultPromises.push(
+        getRemoteFile(hrefUnderscore + ".scss", debugLog),
+        getRemoteFile(hrefUnderscore + ".sass", debugLog),
+        getRemoteFile(hrefUnderscore + ".css", debugLog),
+        getRemoteFile(href + ".scss", debugLog),
+        getRemoteFile(href + ".sass", debugLog),
+        getRemoteFile(href + ".css", debugLog),
+      );
     }
+
+    return await Promise.allSettled(resultPromises).then((results) => {
+      for (const result of results) {
+        if (result.status !== "rejected" && typeof result.value.error === "undefined") {
+          return result.value;
+        }
+      } 
+      return {error: originalError};
+    });
   }
   return result;
 }
