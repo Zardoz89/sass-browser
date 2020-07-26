@@ -1,16 +1,24 @@
 {
-  "name": "sass",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "sass-browser",
+  "version": "0.1.0",
+  "description": "A tiny wrapper around sass.js to allow to use like less.js on browser",
+  "main": "sass-browser.js",
   "scripts": {
     "start": "npm run open",
     "open": "concurrently \"http-server -a localhost -p 1234\" \"opener http://localhost:1234/\""
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Luis Panadero Guardeño  <luis(dot)panadero(at)gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "sass",
+    "scss",
+    "css",
+    "browser"
+  ],
   "devDependencies": {
     "concurrently": "^5.2.0",
+    "eslint": "^7.5.0",
+    "eslint-config-standard": "^14.1.1",
     "http-server": "^0.12.3",
     "opener": "^1.5.1"
   },
