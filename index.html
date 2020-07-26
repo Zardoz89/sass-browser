@@ -1,0 +1,160 @@
+<html>
+  <head>
+    <link rel="stylesheet/sass" type="text/sass" href="scss/main.scss" />
+    <script src="node_modules/sass.js/dist/sass.js"></script>
+    <script>
+        let sheets = [];
+
+        const links = document.querySelectorAll('link');
+
+        links.forEach(link => {
+          if (link.rel === 'stylesheet/sass') {
+            sheets.push(link);
+          }
+        });
+        sheets = sheets.map(function (sheet) {
+          return sheet.getAttribute("href");
+        });
+
+        var sass = new Sass();
+
+        sass.importer(function(request, done) {
+          console.log("importer request: " , request);
+          if (request.path) {
+            // Sass.js already found a file,
+            // we probably want to just load that
+            done();
+          } else if (request.current) {
+            const href = request.resolved.replace("/sass/", "");
+            resolveAndDownloadFile(href).then(result => {
+              done(result);
+            });
+
+          } else {
+            done();
+          }
+        });
+
+        async function resolveAndDownloadFile (href) {
+          let result = await getRemoteFile(href);
+          if (result.error) {
+            hrefUnderscore = addUnderscore(href);
+            result = await getRemoteFile(hrefUnderscore);
+            if (result.error) {
+              if (!hrefUnderscore.endsWith(".scss")) {
+                result = await getRemoteFile(hrefUnderscore + ".scss");
+              }
+              if (result.error) {
+                if (!hrefUnderscore.endsWith(".sass")) {
+                  result = await getRemoteFile(hrefUnderscore + ".sass");
+                }
+                if (result.error) {
+                  if (!hrefUnderscore.endsWith(".css")) {
+                    result = await getRemoteFile(hrefUnderscore + ".css");
+                  }
+                }
+              }
+            }
+          }
+          return result;
+        }
+        async function getRemoteFile(href) {
+          console.log("to retrive : " , href);
+          try {
+            let response = await fetch(href);
+            if (!response.ok) {
+              console.warn("fetch response : ", response);
+              throw new Error(response.status + " : " + response.statusText);
+            }
+            let content = await response.text();
+            return {content: content};
+
+          } catch(ex) {
+            return {error: ex.message};
+          }
+        }
+
+        function addUnderscore(href) {
+          const filenameStart = href.lastIndexOf('/') + 1;
+          let filename = href.substring(filenameStart);
+          if (!filename.startsWith("_")) {
+            filename = "_" + filename
+          }
+          if (filenameStart > 0) {
+            return href.substring(0, filenameStart) + filename;
+          } else {
+            return filename;
+          }
+        }
+
+        sass.options({
+            // If you want inline source comments
+            comments: true,
+        }, function callback() {
+          for (sheet of sheets) {
+            getRemoteFile(sheet).then(result => {
+              if (result.error) {
+                throw new Error(error);
+              }
+              sass.compile(result.content, compilationResult => {
+                if (compilationResult.status === 0) {
+                  console.log("compile : ", compilationResult);
+                  const head = document.head || document.getElementsByTagName('head')[0];
+                  const style = document.createElement('style');
+
+                  head.appendChild(style);
+
+                  style.type = 'text/css';
+                  style.appendChild(document.createTextNode(compilationResult.text));
+                } else {
+                  console.error("compile : ", compilationResult);
+                }
+              });
+            });
+          }
+          /*
+           sass.compile(`@import "scss/other"; div { background-color: green;}`, function(result) {
+            console.log("compile : ", result);
+            if (result.status === 0) {
+              const head = document.head || document.getElementsByTagName('head')[0];
+              const style = document.createElement('style');
+
+              head.appendChild(style);
+
+              style.type = 'text/css';
+              style.appendChild(document.createTextNode(result.text));
+            }
+          });
+          */
+        });
+
+/*
+
+        // preload a set of files
+        sass.preloadFiles(base, directory, sheets, function callback() {
+          console.log("loaded");
+          // list all files (regardless of directory structure)
+          sass.listFiles(function callback(list) {
+            console.log(list);
+          });
+
+          for (sheet of sheets) {
+            sass.compileFile(sheet, function(result) {
+              console.log(sheet, result);
+            });
+          }
+        });
+        */
+
+    </script>
+  </head>
+  <body>
+asdas
+<div>
+ Hello
+</div>
+<p>
+bye
+</p>
+  </body>
+</html>
