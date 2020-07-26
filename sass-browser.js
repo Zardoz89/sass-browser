@@ -69,7 +69,7 @@ async function getRemoteFile(href, debugLog) {
       if (debugLog) {
         console.warn("fetch response : ", response);
       }
-      throw new Error(response.status + " : " + response.statusText);
+      throw new Error(response.status + " : " + response.statusText + " " + href);
     }
     let content = await response.text();
     return {content: content};
@@ -112,6 +112,10 @@ function addUnderscore(href) {
       // We try to get the file, doing http petitions relative to the actual URL
       const href = request.resolved.replace("/sass/", "");
       resolveAndDownloadFile(href, debugLog).then(result => {
+        // Avoid problems when we have many files at different levels
+        if (!result.error) {
+          result.path = request.resolved;
+        }
         done(result);
       });
 
@@ -144,25 +148,20 @@ function addUnderscore(href) {
     const sheets = getAllScssSheets();
     for (const sheet of sheets) {
       // Workaround to not use sass.compileFile that actually not works well with a custom importer function.
-      // Instead, we read the scss file and put the content as sass "stdin"
-      getRemoteFile(sheet, debugLog).then(result => {
-        if (result.error) {
-          throw new Error(error);
+      // Instead, we set stdin to import the SCSS stylesheet
+      sass.compile('@import "' + sheet  + '";', compilationResult => {
+        if (compilationResult.status === 0) {
+          console.log("compile file : ", sheet, " ", compilationResult);
+          const head = document.head || document.getElementsByTagName('head')[0];
+          const style = document.createElement('style');
+
+          head.appendChild(style);
+
+          style.type = 'text/css';
+          style.appendChild(document.createTextNode(compilationResult.text));
+        } else {
+          console.error("compile : ", compilationResult);
         }
-        sass.compile(result.content, compilationResult => {
-          if (compilationResult.status === 0) {
-            console.log("compile file : ", sheet, " ", compilationResult);
-            const head = document.head || document.getElementsByTagName('head')[0];
-            const style = document.createElement('style');
-
-            head.appendChild(style);
-
-            style.type = 'text/css';
-            style.appendChild(document.createTextNode(compilationResult.text));
-          } else {
-            console.error("compile : ", compilationResult);
-          }
-        });
       });
     }
   });

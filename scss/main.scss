@@ -1,6 +1,18 @@
-@import "scss/_bootstrap.scss";
+@import "bootstrap/variables";
+@import "_bootstrap.scss";
 
-div {
+div.green {
   background-color: green;
+}
+
+.show-grid {
+  margin-bottom: 15px;
+}
+
+.show-grid [class^="col-"] {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: rgba(86,61,124,.15);
+  border: 1px solid rgba(86,61,124,.2);
 }
 
