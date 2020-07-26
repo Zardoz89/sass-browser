@@ -64,8 +64,8 @@ async function getRemoteFile(href, debugLog) {
     console.log("to retrive : " , href);
   }
   try {
-    let response = await fetch(href);
-    if (!response.ok) {
+    let response = await fetch(href, { headers: new Headers({'Content-Type': 'text/x-scss'}) });
+    if (!response.ok || response.headers.get("Content-Type").startsWith("text/html")) {
       if (debugLog) {
         console.warn("fetch response : ", response);
       }
