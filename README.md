@@ -1,5 +1,7 @@
 # sass-browser
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+![npm](https://img.shields.io/npm/v/sass-browser)
+![GitHub issues](https://img.shields.io/github/issues/Zardoz89/sass-browser)
 
 A tiny wrapper around [sass.js](https://github.com/medialize/sass.js/) to allow to use like less.js on browser
 
