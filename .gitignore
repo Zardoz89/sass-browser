@@ -63,8 +63,5 @@ typings/
 # parcel
 .cache
 
-
-dist/**
-
 *.swp
 

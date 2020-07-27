@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "description": "A tiny wrapper around sass.js to allow to use like less.js on browser",
   "main": "sass-browser.js",
+  "files": [
+    "sass-browser.js",
+    "dist/sass-browser.min.js"
+  ],
   "scripts": {
     "start": "npm run open",
-    "open": "concurrently \"http-server -a localhost -p 1234\" \"opener http://localhost:1234/\""
+    "open": "concurrently \"http-server -a localhost -p 1234\" \"opener http://localhost:1234/\"",
+    "build": "terser sass-browser.js -o dist/sass-browser.min.js"
   },
   "author": "Luis Panadero Guardeño  <luis(dot)panadero(at)gmail.com>",
   "license": "MIT",
@@ -20,7 +25,8 @@
     "eslint": "^7.5.0",
     "eslint-config-standard": "^14.1.1",
     "http-server": "^0.12.3",
-    "opener": "^1.5.1"
+    "opener": "^1.5.1",
+    "terser": "^4.8.0"
   },
   "dependencies": {
     "sass.js": "^0.11.1"
