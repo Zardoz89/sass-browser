@@ -106,7 +106,7 @@ function addUnderscore(href) {
 }
 
 (function() {
-  const debugLog = window.sassOptions && window.sassOptions.debug;
+  const debugLog = (window.sassOptions && window.sassOptions.debug) || false;
   const sass = new Sass();
 
   // We define the importer funcion to try to load the source files using fetch
