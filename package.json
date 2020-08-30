@@ -1,6 +1,6 @@
 {
   "name": "sass-browser",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A tiny wrapper around sass.js to allow to use like less.js on browser",
   "main": "sass-browser.js",
   "files": [
