@@ -12,7 +12,7 @@ A tiny wrapper around [sass.js](https://github.com/medialize/sass.js/) to allow 
 ```html
 <!-- Too simple! Simply add this to your page -->
 <link rel="stylesheet/scss" type="text/scss" href="path/to/your/file.scss" />
-<!-- Required to include previusly sass.js -->
+<!-- Required to include previously sass.js -->
 <script src="vendor/sass.js"></script>
 <script>
 // Like less.js, you can change options with a global variable. See Options
@@ -25,9 +25,9 @@ Take a look to [index.html](index.html)
 
 ## Features
 
-* Autodownload SCSS files relative to the actual web page.
-* Generates embeded sourcemaps to allow Firefox and Chrome display the original
-    SCSS code from any CSS genrated rule. ![sourceMaps](docs/sass-browser-2.gif)
+* Auto Download SCSS files relative to the actual web page.
+* Generates embedded sourcemaps to allow Firefox and Chrome display the original
+    SCSS code from any CSS generated rule. ![sourceMaps](docs/sass-browser-2.gif)
 
 ## Usage
 
@@ -56,7 +56,7 @@ few things of how works, adding fields to a object :
         generated styles on the web it-self. I try to improve it, doing fetchs
         on parallel. Other idea that I'm thinking, its to pre-read the SCSS and
         search @imports, and try to preload all imports, before sass.js ask for it.
-        Also, I noticed that Chromion/Chrome compiles faster. In any case, this
+        Also, I noticed that Chromium/Chrome compiles faster. In any case, this
         a tool to help to develop with SCSS where traditional node.js
         compile/watch could only be use to generate the production assets, and
         not to recompile continuously (for example a Java web application where
@@ -64,13 +64,13 @@ few things of how works, adding fields to a object :
 
 - **What it's "stdin" on the source maps ?**
     - It's a work around over a [bug with sass.js](https://github.com/medialize/sass.js/issues/129). 
-        sass-browser.js inyects a tiny scss code to import yout SCSS file, 
+        sass-browser.js injects a tiny scss code to import yout SCSS file, 
         instead of loading to sass.js file system.
    
 - **Where I can see if there is an error on my SCSS file?**
     - Look the browser javascript console. I think that the way that less.js
         shows errors, it's pretty annoying. Perhaps in a future, I would add an
-        option to show a floating traslucid closeable div with the error information.
+        option to show a floating translucid closable div with the error information.
 
 # License 
 
